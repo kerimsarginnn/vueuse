@@ -144,17 +144,22 @@ describe('useIdle', () => {
     expect(lastActive.value).toBeGreaterThan(initialTime)
   })
 
-  it('should reset idle state with reset method', () => {
+  it('should reset idle state and lastActive with reset method', () => {
     const timeout = 1000
-    const { idle, reset } = useIdle(timeout)
+    const { idle, lastActive, reset } = useIdle(timeout)
+    const initialTime = lastActive.value
 
     vi.advanceTimersByTime(timeout)
     expect(idle.value).toBe(true)
 
     reset()
     expect(idle.value).toBe(false)
+    expect(lastActive.value).toBeGreaterThan(initialTime)
 
-    vi.advanceTimersByTime(timeout)
+    vi.advanceTimersByTime(timeout - 1)
+    expect(idle.value).toBe(false)
+
+    vi.advanceTimersByTime(1)
     expect(idle.value).toBe(true)
   })
 
